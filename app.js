@@ -50,7 +50,7 @@ app.post('/callback', function(req, res) {
         //}
 
         // ユーザIDを取得する
-        // var user_id = req.body['events'][0]['source']['userId'];
+        var user_id = req.body['events'][0]['source']['userId'];
         var message_id = req.body['events'][0]['message']['id'];
         // 'text', 'image' ...
         var message_type = req.body['events'][0]['message']['type'];
