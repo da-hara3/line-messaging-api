@@ -67,11 +67,13 @@ app.post('/callback', function(req, res) {
 
     function(req, displayName, message_id, message_type, message_text) {
 
-      var message = "hello, " + displayName + "さん"; // helloと返事する
+      var message = "やあ, " + displayName + "。これから色々返せるようにするからちょっと待ってね"; // helloと返事する
       //var message = message_text; // おうむ返しする
       //var message = message_text + "[" + message_text.length + "文字]";
 
-      sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
+      if (message_type === 'text' && message_text === 'OK, がーすー') {
+        sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
+      }
 
       ///////////////////
       // 画像で返事をする //
@@ -140,32 +142,32 @@ app.post('/callback', function(req, res) {
       //////////////////
       // 画像認識パート //
       /////////////////
-      if (message_type === 'image') {
+      // if (message_type === 'image') {
 
-        // 上のLINE Developersドキュメントのコードだとうまくいかない。
-        // chunkにresponseとbodyが一緒に入っている？
-        // encoding: nullが設定されてないから？
-        const options = {
-          url: `https://api.line.me/v2/bot/message/${message_id}/content`,
-          method: 'get',
-          headers: {
-              'Authorization': 'Bearer ' + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-          },
-          encoding: null
-        };
+      //   // 上のLINE Developersドキュメントのコードだとうまくいかない。
+      //   // chunkにresponseとbodyが一緒に入っている？
+      //   // encoding: nullが設定されてないから？
+      //   const options = {
+      //     url: `https://api.line.me/v2/bot/message/${message_id}/content`,
+      //     method: 'get',
+      //     headers: {
+      //         'Authorization': 'Bearer ' + process.env.LINE_CHANNEL_ACCESS_TOKEN,
+      //     },
+      //     encoding: null
+      //   };
 
-        request(options, function(error, response, body) {
-          if (!error && response.statusCode == 200) {
-            console.log('Got responce');
-            visualRecognition.classify(body, function (result) {
-              sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
-              return;
-            })
-          } else {
-            // @todo handle error
-          }
-        });
-      }
+      //   request(options, function(error, response, body) {
+      //     if (!error && response.statusCode == 200) {
+      //       console.log('Got responce');
+      //       visualRecognition.classify(body, function (result) {
+      //         sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
+      //         return;
+      //       })
+      //     } else {
+      //       // @todo handle error
+      //     }
+      //   });
+      // }
       ////////////////////////
       // 画像認識パートここまで //
       ////////////////////////
