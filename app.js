@@ -4,14 +4,13 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var crypto = require("crypto");
 var async = require('async');
-// const line = require('@line/bot-sdk') // 今は使ってない
 
 var sendMessage = require('./sendMessage.js');
 var messageTemplate = require('./messageTemplate.js');
 
 // var pgManager = require('./postgresManager.js'); // データベースを使う時に必要
 // var weather_api = require('./openWeatherMap.js'); // 天気APIを使う時に必要
-var visualRecognition = require('./IBMImageRecognition.js'); // 画像認識AIを使う時に必要
+// var visualRecognition = require('./IBMImageRecognition.js'); // 画像認識AIを使う時に必要
 
 // utilモジュールを使います。
 var util = require('util');
@@ -74,43 +73,52 @@ app.post('/callback', function(req, res) {
 
       sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
 
-      // 画像で返事をする
-      // var messages = ["左上を押した", "右上を押した", "左下を押した", "右下を押した"];
-      // if (message_text == "猫") {
-      //    sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/8cbL5dl.jpg') ]);
-      //    return;
-      // } else if (message_text == "犬") {
-      //    sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/ph82KWH.jpg') ]);
-      //    return;
-      // } else if (message_text == "鹿") {
-      //    sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/Z6ilhSI.jpg') ]);
-      //    return;
-      // }
-
-      // // 天気ときたら東京の天気が返ってくる
-      // // APIキーの設定と、ライブラリの読み込みが必要
-      // if (message_text === "天気") {
-      //   weather_api.weather(function (result) {
-      //     sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
-      //     return;
-      //   });
-      // // 天気　半角スペース　地名（ローマ字のみ　例：tokyo）でそこの天気が返ってくる
-      // } else if (message_text.includes('天気')) {
-      //   const words = message_text.split(' ')
-      //   weather_api.weatherWithPlace(words[1], function (result) {
-      //     sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
-      //     return;
-      //   });
-      // } else {
-      //   sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
-      //   return;
-      // }
+      ///////////////////
+      // 画像で返事をする //
+      ///////////////////
+      /*
+      var messages = ["左上を押した", "右上を押した", "左下を押した", "右下を押した"];
+      if (message_text == "猫") {
+         sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/8cbL5dl.jpg') ]);
+         return;
+      } else if (message_text == "犬") {
+         sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/ph82KWH.jpg') ]);
+         return;
+      } else if (message_text == "鹿") {
+         sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/Z6ilhSI.jpg') ]);
+         return;
+      }
+      */
+      ///////////////////
+      // 画像で返事をする //
+      ///////////////////
 
       //////////////////
-      // 画像認識パート //
+      // 天気APIパート //
       /////////////////
-
-      if (message_type === 'image') {
+      /*
+      // 天気ときたら東京の天気が返ってくる
+      // APIキーの設定と、ライブラリの読み込みが必要
+      if (message_text === "天気") {
+        weather_api.weather(function (result) {
+          sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
+          return;
+        });
+      // 天気　半角スペース　地名（ローマ字のみ　例：tokyo）でそこの天気が返ってくる
+      } else if (message_text.includes('天気')) {
+        const words = message_text.split(' ')
+        weather_api.weatherWithPlace(words[1], function (result) {
+          sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
+          return;
+        });
+      } else {
+        sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
+        return;
+      }
+      */
+      //////////////////
+      // 天気APIパート //
+      /////////////////
 
         // const client = new line.Client({
         //   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
@@ -129,7 +137,11 @@ app.post('/callback', function(req, res) {
         //     });
         //   });
 
-        // https://qiita.com/n0bisuke/items/17c795fea4c2b5571ce0
+      //////////////////
+      // 画像認識パート //
+      /////////////////
+      if (message_type === 'image') {
+
         // 上のLINE Developersドキュメントのコードだとうまくいかない。
         // chunkにresponseとbodyが一緒に入っている？
         // encoding: nullが設定されてないから？
