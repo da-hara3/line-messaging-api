@@ -50,18 +50,16 @@ app.post('/callback', function(req, res) {
         //}
 
         // ユーザIDを取得する
-        var user_id = req.body['events'][0]['source']['userId'];
+        // var user_id = req.body['events'][0]['source']['userId'];
         var message_id = req.body['events'][0]['message']['id'];
         // 'text', 'image' ...
         var message_type = req.body['events'][0]['message']['type'];
         var message_text = req.body['events'][0]['message']['text'];
-        if (req.body['events'][0]['source']['type'] == 'user') {
-          request.get(getProfileOption(user_id), function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-              callback(req, body['displayName'], message_id, message_type, message_text);
-            }
-          });
-        }
+        request.get(getProfileOption(user_id), function(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            callback(req, body['displayName'], message_id, message_type, message_text);
+          }
+       });    
       },
     ],
 
