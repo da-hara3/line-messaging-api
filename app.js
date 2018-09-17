@@ -30,7 +30,7 @@ app.get('/', function(req, res) {
 // async.waterfall([function(){}], function(){})
 app.post('/callback', function(req, res) {
   console.log("リクエストログ開始");
-  console.log(req);
+  console.log(req.body['events'][0]);
   console.log("リクエストログ終了");
   async.waterfall([
       function(callback) {
@@ -73,7 +73,7 @@ app.post('/callback', function(req, res) {
       const CORRECT_SPACE_INDEX = 4; // これは要らない。指定ワードが何かによって可変で処理できるべき。
 
       // 半角も全角も判定できるようにしておく。
-      if (isOperation(message_text, CORRECT_SPACE_INDEX)) {
+      if (isOperation(message_type, message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
         sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
       } else if (message_text === 'がーすー' ){
@@ -213,8 +213,8 @@ function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
 }
 
-function isOperation(messageText, correctIndex){
-  if (message_type !== 'text' || message_text.indexOf('がーすー') !== 0) {
+function isOperation(messageType, messageText, correctIndex){
+  if (messageType !== 'text' || messageText.indexOf('がーすー') !== 0) {
     return false;
   }
   if (messageText.indexOf(' ') === correctIndex){
