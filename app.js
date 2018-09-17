@@ -29,6 +29,7 @@ app.get('/', function(req, res) {
 
 // async.waterfall([function(){}], function(){})
 app.post('/callback', function(req, res) {
+  console.log(req);
   async.waterfall([
       function(callback) {
         // リクエストがLINE Platformから送られてきたか確認する
