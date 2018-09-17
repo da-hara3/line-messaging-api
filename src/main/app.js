@@ -8,6 +8,7 @@ let async = require('async');
 const BASE_DIR = '../';
 let sendMessage = require(BASE_DIR + 'line/api/sendMessage.js');
 let messageTemplate = require(BASE_DIR + 'line/api/messageTemplate.js');
+let calendar = require(BASE_DIR + 'google/calendar/logic.js');
 
 // let pgManager = require('./postgresManager.js'); // データベースを使う時に必要
 // let weather_api = require('./openWeatherMap.js'); // 天気APIを使う時に必要
@@ -21,6 +22,7 @@ app.set('port', (process.env.PORT || 8000));
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 // JSONパーサー
 app.use(bodyParser.json());
 
@@ -74,7 +76,7 @@ app.post('/callback', function(req, res) {
       const CORRECT_SPACE_INDEX = 4; // これは要らない。指定ワードが何かによって可変で処理できるべき。
 
       // 半角も全角も判定できるようにしておく。
-      if (isOperation(message_type, message_text, CORRECT_SPACE_INDEX)) {
+      if (isReturnMessage(message_type, message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
         sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
       } else if (message_text === 'がーすー' ){
@@ -214,7 +216,8 @@ function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
 }
 
-function isOperation(messageType, messageText, correctIndex){
+// botとして何らかのメッセージを返すかを
+function isReturnMessage(messageType, messageText, correctIndex){
   if (messageType !== 'text' || messageText.indexOf('がーすー') !== 0) {
     return false;
   }
@@ -226,5 +229,3 @@ function isOperation(messageType, messageText, correctIndex){
   }
   return false;
 }
-
-
