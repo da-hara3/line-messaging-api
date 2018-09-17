@@ -29,7 +29,9 @@ app.get('/', function(req, res) {
 
 // async.waterfall([function(){}], function(){})
 app.post('/callback', function(req, res) {
+  console.log("リクエストログ開始");
   console.log(req);
+  console.log("リクエストログ終了");
   async.waterfall([
       function(callback) {
         // リクエストがLINE Platformから送られてきたか確認する
@@ -68,21 +70,16 @@ app.post('/callback', function(req, res) {
 
       let message = "やあ, " + displayName + "。これから色々返せるようにするからちょっと待ってね"; 
       const NO_SPACE_INDEX = -1;
-      const CORRECT_SPACE_INDEX = 4;
+      const CORRECT_SPACE_INDEX = 4; // これは要らない。指定ワードが何かによって可変で処理できるべき。
 
       // 半角も全角も判定できるようにしておく。
-      if (message_type === 'text' && message_text.indexOf('がーすー') === 0) {
-        let end_index = message_text.indexOf(' ');
-        if (end_index === NO_SPACE_INDEX || end_index !== CORRECT_SPACE_INDEX){
-          end_index = message_text.indexOf('　');
-        }
-        if (end_index === NO_SPACE_INDEX || end_index !== CORRECT_SPACE_INDEX){
-          return;
-        }
+      if (isOperation(message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
-
         sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
+      } else if (message_text === 'がーすー' ){
+        // がーすーのプロファイルを残す
       }
+      
 
       ///////////////////
       // 画像で返事をする //
@@ -214,6 +211,19 @@ function getProfileOption(user_id) {
 // 署名検証
 function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
+}
+
+function isOperation(messageText, correctIndex){
+  if (message_type !== 'text' || message_text.indexOf('がーすー') !== 0) {
+    return false;
+  }
+  if (messageText.indexOf(' ') === correctIndex){
+    return true;
+  }
+  if (messageText.indexOf('　') === correctIndex){
+    return true;
+  }
+  return false;
 }
 
 
