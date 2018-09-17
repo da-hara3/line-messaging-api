@@ -1,19 +1,20 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var request = require('request');
-var crypto = require("crypto");
-var async = require('async');
+let express = require('express');
+let app = express();
+let bodyParser = require('body-parser');
+let request = require('request');
+let crypto = require("crypto");
+let async = require('async');
 
-var sendMessage = require('./sendMessage.js');
-var messageTemplate = require('./messageTemplate.js');
+const BASE_DIR = '../';
+let sendMessage = require(BASE_DIR + 'line/api/sendMessage.js');
+let messageTemplate = require(BASE_DIR + 'line/api/messageTemplate.js');
 
-// var pgManager = require('./postgresManager.js'); // データベースを使う時に必要
-// var weather_api = require('./openWeatherMap.js'); // 天気APIを使う時に必要
-// var visualRecognition = require('./IBMImageRecognition.js'); // 画像認識AIを使う時に必要
+// let pgManager = require('./postgresManager.js'); // データベースを使う時に必要
+// let weather_api = require('./openWeatherMap.js'); // 天気APIを使う時に必要
+// let visualRecognition = require('./IBMImageRecognition.js'); // 画像認識AIを使う時に必要
 
 // utilモジュールを使います。
-var util = require('util');
+let util = require('util');
 
 app.set('port', (process.env.PORT || 8000));
 // JSONの送信を許可
@@ -53,11 +54,11 @@ app.post('/callback', function(req, res) {
         //}
 
         // ユーザIDを取得する
-        var user_id = req.body['events'][0]['source']['userId'];
-        var message_id = req.body['events'][0]['message']['id'];
+        let user_id = req.body['events'][0]['source']['userId'];
+        let message_id = req.body['events'][0]['message']['id'];
         // 'text', 'image' ...
-        var message_type = req.body['events'][0]['message']['type'];
-        var message_text = req.body['events'][0]['message']['text'];
+        let message_type = req.body['events'][0]['message']['type'];
+        let message_text = req.body['events'][0]['message']['text'];
         request.get(getProfileOption(user_id), function(error, response, body) {
           if (!error && response.statusCode == 200) {
             callback(req, body['displayName'], message_id, message_type, message_text);
@@ -85,7 +86,7 @@ app.post('/callback', function(req, res) {
       // 画像で返事をする //
       ///////////////////
       /*
-      var messages = ["左上を押した", "右上を押した", "左下を押した", "右下を押した"];
+      let messages = ["左上を押した", "右上を押した", "左下を押した", "右下を押した"];
       if (message_text == "猫") {
          sendMessage.send(req, [ messageTemplate.imagemapMessage(messages, 'https://i.imgur.com/8cbL5dl.jpg') ]);
          return;

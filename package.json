@@ -4,6 +4,7 @@
   "description": "kukkoro-bot",
   "main": "app.js",
   "scripts": {
+    "start": "node ./src/main/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "k-nakayama-pg",
@@ -12,6 +13,7 @@
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "googleapis": "^27.0.0",
     "request": "^2.75.0",
     "watson-developer-cloud": "^3.9.1"
   }
