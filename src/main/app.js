@@ -241,7 +241,7 @@ async function operationForParam(paramText, callBackForLine){
     case '予定登録して':
       return "今実装中！";
     default:
-        return "ごめんよ。君の言っていることが分からないよ・・・";
+        return callBackForLine("ごめんよ。君の言っていることが分からないよ・・・");
         break;
   }
 }

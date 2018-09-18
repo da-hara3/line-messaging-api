@@ -59,7 +59,7 @@ function getAccessToken(oAuth2Client, callback) {
 }
 
 exports.getListEvents =  function (callBackAfterApi) {
-  return authorize(JSON.parse(process.env.credentials), listEvents, callBackAfterApi);
+  return authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, callBackAfterApi);
 }
 
 /**
