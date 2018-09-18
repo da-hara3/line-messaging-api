@@ -78,9 +78,10 @@ app.post('/callback', function(req, res) {
       // 半角も全角も判定できるようにしておく。
       if (isReturnMessage(message_type, message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
-        sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
+        let operation_func = operationForParam(param_text);
+        sendMessage.send(req, [ messageTemplate.textMessage(operation_func) ]);
       } else if (message_text === 'がーすー' ){
-        // がーすーのプロファイルを残す
+        // がーすーのプロファイルを返したい
       }
       
 
@@ -228,4 +229,19 @@ function isReturnMessage(messageType, messageText, correctIndex){
     return true;
   }
   return false;
+}
+
+// 引数に応じて処理をしてその結果の文言をlineに投稿する
+function operationForParam(paramText){
+  let params = paramText.split(/\s+/);
+  switch(params[0]) {
+    case '予定教えて':
+      return calendar.getListEvents();
+    case '予定登録':
+    case '予定登録して':
+      return "今実装中！";
+    default:
+        return "ごめんよ。君の言っていることが分からないよ・・・";
+        break;
+  }
 }

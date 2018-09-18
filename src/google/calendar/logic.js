@@ -7,8 +7,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 const TOKEN_PATH = 'token.json';
 
 // Load client secrets from a local file.
-console.log(process.env.credentials);
-authorize(JSON.parse(process.env.credentials), listEvents);
+authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents);
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -22,11 +21,10 @@ function authorize(credentials, callback) {
       client_id, client_secret, redirect_uris[0]);
 
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
-    oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
-  });
+  // getAccessToken(oAuth2Client, callback); TODO //reflesh enviroment var
+  oAuth2Client.setCredentials(JSON.parse(process.env.GOOGLE_TOKEN));
+  return callback(oAuth2Client);
+  
 }
 
 /**
@@ -60,6 +58,10 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
+exports.getListEvents = function () {
+  authorize(JSON.parse(process.env.credentials), listEvents);
+}
+
 /**
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
@@ -80,9 +82,16 @@ function listEvents(auth) {
       calendarItems.map((calendarItem, i) => {
         const start = calendarItem.start.dateTime || calendarItem.start.date;
         console.log(`${start} - ${calendarItem.summary}`);
+        return `${start} - ${calendarItem.summary}`;
       });
     } else {
       console.log('No upcoming calendarItems found.');
     }
   });
+}
+
+
+function registerEvent(auth) {
+  const calendar = google.calendar({version: 'v3', auth});
+
 }
