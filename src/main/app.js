@@ -27,8 +27,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-  res.send('<h1>hello world</h1>');
+  calendar.getListEvents(function(value){res.send('<h1>' + value + '</h1>')});
 });
+
 
 // async.waterfall([function(){}], function(){})
 app.post('/callback', function(req, res) {
@@ -78,8 +79,7 @@ app.post('/callback', function(req, res) {
       // 半角も全角も判定できるようにしておく。
       if (isReturnMessage(message_type, message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
-        let operation_func = operationForParam(param_text);
-        sendMessage.send(req, [ messageTemplate.textMessage(operation_func) ]);
+        operationForParam(param_text, function(value) {sendMessage.send(req, [ messageTemplate.textMessage(value) ]);});
       } else if (message_text === 'がーすー' ){
         // がーすーのプロファイルを返したい
       }
@@ -232,11 +232,11 @@ function isReturnMessage(messageType, messageText, correctIndex){
 }
 
 // 引数に応じて処理をしてその結果の文言をlineに投稿する
-function operationForParam(paramText){
+async function operationForParam(paramText, callBackForLine){
   let params = paramText.split(/\s+/);
   switch(params[0]) {
     case '予定教えて':
-      return calendar.getListEvents();
+      return calendar.getListEvents(callBackForLine);
     case '予定登録':
     case '予定登録して':
       return "今実装中！";

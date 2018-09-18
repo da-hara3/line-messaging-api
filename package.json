@@ -4,7 +4,7 @@
   "description": "kukkoro-bot",
   "main": "app.js",
   "scripts": {
-    "start": "node ./src/main/app.js",
+    "start": "node  ./src/main/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "k-nakayama-pg",
