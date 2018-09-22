@@ -92,7 +92,37 @@ function listEvents(auth, callBackAfterApi) {
 }
 
 
-function registerEvent(auth) {
+function registerEvent(auth, params, callBackAfterApi) {
+  let event = {
+    'summary': 'test title',
+    'location': 'test location',
+    'description': '説明',
+    'start': {
+      'dateTime': '2015-05-28T09:00:00-07:00',
+      'timeZone': 'Asia/Tokyo',
+    },
+    'end': {
+      'dateTime': '2015-05-28T17:00:00-07:00',
+      'timeZone': 'Asia/Tokyo',
+    },
+    'reminders': {
+      'useDefault': false,
+      'overrides': [
+        {'method': 'email', 'minutes': 24 * 60},
+        {'method': 'popup', 'minutes': 10},
+      ],
+    },
+  };
   const calendar = google.calendar({version: 'v3', auth});
-
+  calendar.events.insert({
+    calendarId: 'primary',
+    resource: event,
+  }, (err, res) => {
+  if (err) {
+    console.log('There was an error contacting the Calendar service: ' + err);
+    return;
+  }
+  console.log('Event created: %s', res.htmlLink);
+  callBackAfterApi(res.htmlLink + 'を登録したよ！');
+  });
 }

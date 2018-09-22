@@ -27,9 +27,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-  calendar.getListEvents(function(value){res.send('<h1>' + value + '</h1>')});
+  res.send('<h1>Hello World! </h1>');
+  // calendar.getListEvents(function(value){res.send('<h1>' + value + '</h1>')});
 });
 
+app.get('/test', (req, res) => {
+  calendar.registerEvent((value) => {res.send('<h1>' + value + '</h1>')});
+});
 
 // async.waterfall([function(){}], function(){})
 app.post('/callback', function(req, res) {
@@ -239,7 +243,7 @@ async function operationForParam(paramText, callBackForLine){
       return calendar.getListEvents(callBackForLine);
     case '予定登録':
     case '予定登録して':
-      return "今実装中！";
+    return calendar.registerEvent(callBackForLine);
     default:
         return callBackForLine("ごめんよ。君の言っていることが分からないよ・・・");
         break;
