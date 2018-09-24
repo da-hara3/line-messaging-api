@@ -87,7 +87,7 @@ app.post('/callback', function(req, res) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
         operationForParam(param_text, function(value) {sendMessage.send(req, [ messageTemplate.textMessage(value) ]);});
       } else if (message_text === 'がーすー' ){
-        // がーすーのプロファイルを返したい
+        callBackForLine("やあ, " + displayName + "。ぼくはがーすー。\n「こんなことしてほしい！」があったら言ってね！");
       }
       
 
@@ -245,9 +245,26 @@ async function operationForParam(paramText, callBackForLine){
       return calendar.getListEvents(callBackForLine);
     case '予定登録':
     case '予定登録して':
-    return calendar.registerEvent(callBackForLine, params);
+      return calendar.registerEvent(callBackForLine, params);
+    case '仕様' :
+    case '仕様教えて' :
+      return callBackForLine("呼びかけの基本: 先頭に「がーすー」"
+      + "\n---カレンダー確認---" 
+      + "\n・指定語「予定教えて」・例 「がーすー 予定教えて」"
+      + "\n---カレンダー登録---"
+      + "\n・指定語:「予定登録」,「予定登録して」"
+      + "\n・オプション:スペースでそれぞれの情報を区切る"
+      + "\n  * `t-`: タイトル * `s-`: 開始日時 * `e-`: 終了日時, `l-`: 場所, `指定なし`: 説明"
+      + "\n・例 「がーすー t-飲み会 s-2018-09-30T20:00」 *タイトルと開始日時が必須だよ " 
+      + "\n---カレンダー情報---"
+      + "\nharada.hiroto.bot@gmail.com に登録されてるよ"
+      + "\n中の人にgoogleアカウントを送ってくれたら権限を付与するよ"
+      );
     default:
         return callBackForLine("ごめんよ。君の言っていることが分からないよ・・・");
-        break;
-  }
+    }
+
+    function get(){
+
+    }
 }
