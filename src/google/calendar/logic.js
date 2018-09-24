@@ -128,7 +128,7 @@ function createEvent(params){
   const META_START = 's-';
   const META_END = 'e-';
   const META_LOCATION = 'l-';
-  const JAPAN_TIME = '+9:00'
+  const JAPAN_TIME = '+09:00'
   const DEFAULT_START_TIME = '00:00';
 
    for (let i = 1; i < params.length; i++) {
