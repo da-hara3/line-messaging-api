@@ -194,13 +194,13 @@ function createEvent(params){
      start = startDate + JAPAN_TIME;
    }
 
-   if (end == ''){
-     // からの場合はgoogleに任せるｗ
-   } else{
-    let endDate = dateFormat(new Date(end)); 
-    end = startDate + JAPAN_TIME;
-   }
+  if (end == ''){
+   // からの場合はgoogleに任せるｗ
+  } else{
+   let endDate = dateFormat(new Date(end)); 
+   end = startDate + JAPAN_TIME;
   }
+  
 
   return {
     'summary': title,
