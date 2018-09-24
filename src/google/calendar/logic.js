@@ -136,13 +136,13 @@ function createEvent(params){
      // jsのクラスの考えが不明瞭なので一旦力技
      // TODO: typeScriptへのリファクタとともに書き換え
     if (param.indexOf(META_TITLE) == 0){
-      title = param;
+      title = param.replace(META_TITLE, '');
     } else if (param.indexOf(META_START) == 0){
-      start = param;
+      start = param.replace(META_START, '');
     } else if (param.indexOf(META_END) == 0){
-      end = param;
+      end = param.replace(META_END, '');
     } else if (param.indexOf(META_LOCATION) == 0){
-      location = param;
+      location = param.replace(META_LOCATION, '');
     } else {
       description += param;
     }
