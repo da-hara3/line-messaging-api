@@ -132,11 +132,11 @@ function registerEventLocal(auth, callBackAfterApi, params) {
    return 
   }
 
-  if (event.start.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
+  if (event.start.dateTime.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
     callBackAfterApi('開始日がおかしいよ！');
     return 
   }
-  if (event.end.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
+  if (event.end.dateTime.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
     callBackAfterApi('開始日がおかしいよ！');
     return 
   }
