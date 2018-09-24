@@ -190,15 +190,15 @@ function createEvent(params){
    if (start == ''){
     // からの場合は呼び出し元でエラーにする。
    } else  {
-     let startDate = dateFormat.format(new Date(start), 'yyyy-MM-ddThh:mm:ss'); 
-     start = startDate + JAPAN_TIME;
+    let startDate = dateFormat.format(new Date(start), 'yyyy-MM-ddThh:mm:ss'); 
+    start = startDate + JAPAN_TIME;
    }
 
   if (end == ''){
-   // からの場合はgoogleに任せるｗ
+    end = start;
   } else{
-   let endDate = dateFormat.format(new Date(end), 'yyyy-MM-ddThh:mm:ss'); 
-   end = endDate + JAPAN_TIME;
+    let endDate = dateFormat.format(new Date(end), 'yyyy-MM-ddThh:mm:ss'); 
+    end = endDate + JAPAN_TIME;
   }
   
 
