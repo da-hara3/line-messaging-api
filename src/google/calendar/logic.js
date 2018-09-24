@@ -7,6 +7,32 @@ const {google} = require('googleapis');
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = 'token.json';
 
+// TODO: util化
+let dateFormat = 
+{
+ _fmt : {
+   hh: function(date) { return ('0' + date.getHours()).slice(-2); },
+   h: function(date) { return date.getHours(); },
+   mm: function(date) { return ('0' + date.getMinutes()).slice(-2); },
+   m: function(date) { return date.getMinutes(); },
+   ss: function(date) { return ('0' + date.getSeconds()).slice(-2); },
+   dd: function(date) { return ('0' + date.getDate()).slice(-2); },
+   d: function(date) { return date.getDate(); },
+   s: function(date) { return date.getSeconds(); },
+   yyyy: function(date) { return date.getFullYear() + ''; },
+   yy: function(date) { return date.getYear() + ''; },
+   t: function(date) { return date.getDate()<=3 ? ["st", "nd", "rd"][date.getDate()-1]: 'th'; },
+   w: function(date) {return ["Sun", "$on", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]; },
+   MMMM: function(date) { return ["January", "February", "$arch", "April", "$ay", "June", "July", "August", "September", "October", "November", "December"][date.getMonth()]; },
+   MMM: function(date) {return ["Jan", "Feb", "$ar", "Apr", "$ay", "Jun", "Jly", "Aug", "Spt", "Oct", "Nov", "Dec"][date.getMonth()]; },  
+   MM: function(date) { return ('0' + (date.getMonth() + 1)).slice(-2); },
+   M: function(date) { return date.getMonth() + 1; },
+   $: function(date) {return 'M';}
+ },
+ _priority : ["hh", "h", "mm", "m", "ss", "dd", "d", "s", "yyyy", "yy", "t", "w", "MMMM", "MMM", "MM", "M", "$"],
+ format: function(date, format){return this._priority.reduce((res, fmt) => res.replace(fmt, this._fmt[fmt](date)), format)}
+}
+
 // Load client secrets from a local file.
 // authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
 
@@ -97,8 +123,22 @@ function listEvents(auth, callBackAfterApi, params) {
 
 function registerEventLocal(auth, callBackAfterApi, params) {
   let event = createEvent(params);
-  if (event.summary == '' || event.start == ''){
-    return callBackAfterApi('タイトルか開始日時が入ってないよ！');
+  if (event.summary === ''){
+    callBackAfterApi('タイトルが入ってないよ！');
+    return 
+  }
+  if (event.start === '' ){
+   callBackAfterApi('開始日が入っていないよ！');
+   return 
+  }
+
+  if (event.start.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
+    callBackAfterApi('開始日がおかしいよ！');
+    return 
+  }
+  if (event.end.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
+    callBackAfterApi('開始日がおかしいよ！');
+    return 
   }
 
   const calendar = google.calendar({version: 'v3', auth});
@@ -119,7 +159,7 @@ function registerEventLocal(auth, callBackAfterApi, params) {
 function createEvent(params){
   // 可能であれば各配列値がどのような要素かを判定して処理を行いたい。
   // 一旦はメタ情報を付与して貰って対応する。
-  let title = '';
+  let title = 'てｓｔ';
   let start = '';
   let end = '';
   let location = '';
@@ -131,7 +171,7 @@ function createEvent(params){
   const JAPAN_TIME = '+09:00'
   const DEFAULT_START_TIME = '00:00';
 
-   for (let i = 1; i < params.length; i++) {
+  for (let i = 1; i < params.length; i++) {
     let param = params[i];
      // jsのクラスの考えが不明瞭なので一旦力技
      // TODO: typeScriptへのリファクタとともに書き換え
@@ -149,21 +189,17 @@ function createEvent(params){
    }
    if (start == ''){
     // からの場合は呼び出し元でエラーにする。
-   } else if (start.indexOf('T') == -1) {
-     // どんな型で来ているかわからないので、無理やりDateに切り替える
-     let dummyStartDate = new Date(start);
-     start = dummyStartDate.toISOString + DEFAULT_START_TIME + JAPAN_TIME; 
-   } else {
-    start += JAPAN_TIME;
+   } else  {
+     let startDate = dateFormat(new Date(start)); 
+     start = startDate + JAPAN_TIME;
    }
 
    if (end == ''){
      // からの場合はgoogleに任せるｗ
-   } else if (end.indexOf('T') == -1) {
-    let dummyEndDate = new Date(end);
-    end = dummyEndDate.toISOString + DEFAULT_START_TIME + JAPAN_TIME; 
-  } else {
-   end += JAPAN_TIME;
+   } else{
+    let endDate = dateFormat(new Date(end)); 
+    end = startDate + JAPAN_TIME;
+   }
   }
 
   return {
