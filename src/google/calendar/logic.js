@@ -3,11 +3,12 @@ const readline = require('readline');
 const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+// If you want to define `readonly`, you can add `.readonly`
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = 'token.json';
 
 // Load client secrets from a local file.
-authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
+// authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -16,15 +17,19 @@ authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, callback, callBackAfterApi) {
+  const dummyParams = [];
+  authorize(credentials, callback, callBackAfterApi, dummyParams);
+}
+
+function authorize(credentials, callback, callBackAfterApi, params) {
   const {client_secret, client_id, redirect_uris} = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
   // Check if we have previously stored a token.
-  // getAccessToken(oAuth2Client, callback); TODO //reflesh enviroment var
+  // getAccessToken(oAuth2Client, callback); //TODO //reflesh enviroment var
   oAuth2Client.setCredentials(JSON.parse(process.env.GOOGLE_TOKEN));
-  return callback(oAuth2Client, callBackAfterApi);
-  
+  return callback(oAuth2Client, callBackAfterApi, params); 
 }
 
 /**
@@ -58,15 +63,14 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-exports.getListEvents =  function (callBackAfterApi) {
-  return authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, callBackAfterApi);
-}
+// define callBackApi ---------------------------------------------------
 
 /**
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listEvents(auth, callBackAfterApi) {
+function listEvents(auth, callBackAfterApi, params) {
+  // param when be used feature.
   const calendar = google.calendar({version: 'v3', auth});
   calendar.events.list({
     calendarId: 'primary',
@@ -91,18 +95,87 @@ function listEvents(auth, callBackAfterApi) {
   });
 }
 
+function registerEventLocal(auth, callBackAfterApi, params) {
+  let event = createEvent(params);
+  if (event.summary == '' || event.start == ''){
+    return callBackAfterApi('タイトルか開始日時が入ってないよ！');
+  }
 
-function registerEvent(auth, params, callBackAfterApi) {
-  let event = {
-    'summary': 'test title',
-    'location': 'test location',
-    'description': '説明',
+  const calendar = google.calendar({version: 'v3', auth});
+  calendar.events.insert({
+    auth: auth,
+    calendarId: 'primary',
+    resource: event,
+  }, (err, res) => {
+  if (err) {
+    console.log('There was an error contacting the Calendar service: ' + err);
+    callBackAfterApi('エラーが発生しちゃった・・・ :' + err);
+    return;
+  }
+  callBackAfterApi(res.data.htmlLink + 'を登録したよ！');
+  });
+}
+
+function createEvent(params){
+  // 可能であれば各配列値がどのような要素かを判定して処理を行いたい。
+  // 一旦はメタ情報を付与して貰って対応する。
+  let title = '';
+  let start = '';
+  let end = '';
+  let location = '';
+  let description = '';
+  const META_TITLE = 't-';
+  const META_START = 's-';
+  const META_END = 'e-';
+  const META_LOCATION = 'l-';
+  const JAPAN_TIME = '+9:00'
+  const DEFAULT_START_TIME = '00:00';
+
+   for (let i = 1; i < params.length; i++) {
+    let param = params[i];
+     // jsのクラスの考えが不明瞭なので一旦力技
+     // TODO: typeScriptへのリファクタとともに書き換え
+    if (param.indexOf(META_TITLE) == 0){
+      title = param;
+    } else if (param.indexOf(META_START) == 0){
+      start = param;
+    } else if (param.indexOf(META_END) == 0){
+      end = param;
+    } else if (param.indexOf(META_LOCATION) == 0){
+      location = param;
+    } else {
+      description += param;
+    }
+   }
+   if (start == ''){
+    // からの場合は呼び出し元でエラーにする。
+   } else if (start.indexOf('T') == -1) {
+     // どんな型で来ているかわからないので、無理やりDateに切り替える
+     let dummyStartDate = new Date(start);
+     start = dummyStartDate.toISOString + DEFAULT_START_TIME + JAPAN_TIME; 
+   } else {
+    start += JAPAN_TIME;
+   }
+
+   if (end == ''){
+     // からの場合はgoogleに任せるｗ
+   } else if (end.indexOf('T') == -1) {
+    let dummyEndDate = new Date(end);
+    end = dummyEndDate.toISOString + DEFAULT_START_TIME + JAPAN_TIME; 
+  } else {
+   end += JAPAN_TIME;
+  }
+
+  return {
+    'summary': title,
+    'location': location,
+    'description': description,
     'start': {
-      'dateTime': '2015-05-28T09:00:00-07:00',
+      'dateTime': start,
       'timeZone': 'Asia/Tokyo',
     },
     'end': {
-      'dateTime': '2015-05-28T17:00:00-07:00',
+      'dateTime': end,
       'timeZone': 'Asia/Tokyo',
     },
     'reminders': {
@@ -113,16 +186,14 @@ function registerEvent(auth, params, callBackAfterApi) {
       ],
     },
   };
-  const calendar = google.calendar({version: 'v3', auth});
-  calendar.events.insert({
-    calendarId: 'primary',
-    resource: event,
-  }, (err, res) => {
-  if (err) {
-    console.log('There was an error contacting the Calendar service: ' + err);
-    return;
-  }
-  console.log('Event created: %s', res.htmlLink);
-  callBackAfterApi(res.htmlLink + 'を登録したよ！');
-  });
+}
+
+// define exports
+
+exports.getListEvents =  function (callBackAfterApi) {
+  return authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, callBackAfterApi);
+}
+
+exports.registerEvent = function (callBackAfterApi, params) {
+  return authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), registerEventLocal, callBackAfterApi, params);
 }
