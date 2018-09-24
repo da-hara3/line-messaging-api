@@ -152,7 +152,7 @@ function registerEventLocal(auth, callBackAfterApi, params) {
     callBackAfterApi('エラーが発生しちゃった・・・ :' + err);
     return;
   }
-  callBackAfterApi(res.data.htmlLink + 'を登録したよ！');
+  callBackAfterApi(res.data.htmlLink + '+\nを登録したよ！');
   });
 }
 
