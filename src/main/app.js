@@ -9,9 +9,10 @@ const BASE_DIR = '../';
 let sendMessage = require(BASE_DIR + 'line/api/sendMessage.js');
 let messageTemplate = require(BASE_DIR + 'line/api/messageTemplate.js');
 let calendar = require(BASE_DIR + 'google/calendar/logic.js');
+let weatherMap = require(BASE_DIR + 'weather/openWeatherMap.js'); 
 
 // let pgManager = require('./postgresManager.js'); // データベースを使う時に必要
-// let weather_api = require('./openWeatherMap.js'); // 天気APIを使う時に必要
+
 // let visualRecognition = require('./IBMImageRecognition.js'); // 画像認識AIを使う時に必要
 
 // utilモジュールを使います。
@@ -34,7 +35,7 @@ app.get('/', function(req, res) {
 
 // あくまで処理の確認用
 app.get('/test', (req, res) => {
-  calendar.registerEvent((value) => {res.send('<h1>' + value + '</h1>')});
+  weatherMap.get((value) => {res.send('<h1>' + value + '</h1>')});
 });
 
 // ここは最終的に別クラスに移譲する作りにするべき
@@ -56,11 +57,6 @@ app.post('/callback', function(req, res) {
         ) {
           return;
         }
-
-        // 特定の単語に反応させたい場合
-        //if (req.body['events'][0]['message']['text'].indexOf('please input some word') == -1) {
-        //    return;
-        //}
 
         // ユーザIDを取得する
         let user_id = req.body['events'][0]['source']['userId'];
@@ -111,49 +107,7 @@ app.post('/callback', function(req, res) {
       // 画像で返事をする //
       ///////////////////
 
-      //////////////////
-      // 天気APIパート //
-      /////////////////
-      /*
-      // 天気ときたら東京の天気が返ってくる
-      // APIキーの設定と、ライブラリの読み込みが必要
-      if (message_text === "天気") {
-        weather_api.weather(function (result) {
-          sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
-          return;
-        });
-      // 天気　半角スペース　地名（ローマ字のみ　例：tokyo）でそこの天気が返ってくる
-      } else if (message_text.includes('天気')) {
-        const words = message_text.split(' ')
-        weather_api.weatherWithPlace(words[1], function (result) {
-          sendMessage.send(req, [ messageTemplate.textMessage(result) ]);
-          return;
-        });
-      } else {
-        sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
-        return;
-      }
-      */
-      //////////////////
-      // 天気APIパート //
-      /////////////////
 
-        // const client = new line.Client({
-        //   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN
-        // });
-
-        // client.getMessageContent(message_id)
-        //   .then((stream) => {
-        //     stream.on('data', (chunk) => {
-        //       // console.log(typeof chunk)
-        //       message = visualRecognition.classify(chunk, message_id)
-        //       sendMessage.send(req, [ messageTemplate.textMessage(message) ]);
-        //     });
-        //     stream.on('error', (err) => {
-        //       // error handling
-        //       console.log('error on image')
-        //     });
-        //   });
 
       //////////////////
       // 画像認識パート //
@@ -246,6 +200,9 @@ async function operationForParam(paramText, callBackForLine){
     case '予定登録':
     case '予定登録して':
       return calendar.registerEvent(callBackForLine, params);
+    case '天気':
+    case '天気教えて':
+      return weatherMap.get(callBackForLine);
     case '仕様' :
     case '仕様教えて' :
       return callBackForLine("呼びかけの基本: 先頭に「がーすー」"
