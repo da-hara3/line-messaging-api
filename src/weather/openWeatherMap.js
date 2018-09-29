@@ -3,11 +3,13 @@ const http = require('http');
 const location = "Tokyo";
 const units = 'metric';
 const APIKEY = process.env.OPEN_WEATHER_MAP_API_KEY;
-const URL = 'http://api.openweathermap.org/data/2.5/weather?q='+ location +'&units='+ units +'&appid='+ APIKEY;
+const TODAY_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather?q='+ location +'&units='+ units +'&appid='+ APIKEY;
+const FIVW_DAYS_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/forecast?q='+ location +'&units='+ units +'&appid='+ APIKEY;
+
 
 exports.get = function (callback) {
 // function weather(callback) {
-  http.get(URL, function(res) {
+  http.get(TODAY_WEATHER_URL, function(res) {
     let body = '';
     res.setEncoding('utf8');
     res.on('data', function(chunk) {
@@ -23,8 +25,27 @@ exports.get = function (callback) {
   });
 }
 
+exports.getFiveDays = function (callback) {
+  // function weather(callback) {
+    http.get(FIVW_DAYS_WEATHER_URL, function(res) {
+      let body = '';
+      res.setEncoding('utf8');
+      res.on('data', function(chunk) {
+        body += chunk;
+      });
+      res.on('end', function(chunk) {
+        let parseJson = JSON.parse(body);
+        // console.log(res.weather[0].main);
+        callback(resolveWeatherJson(parseJson));
+      });
+    }).on('error', function(e) {
+      console.log(e.message);
+    });
+  }
+
 function resolveWeatherJson(parseJson){
   let message = "";
+  const HEAD_MESSAGE = ""
   for (weather of parseJson.weather){
     if (message !== ""){
       message += ", ところにより";

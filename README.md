@@ -38,8 +38,10 @@ $ git push heroku master
 $ heroku config:set WEATHER_API_KEY=""
 ```
 #### open wheatherの参考サイト
-* https://qiita.com/key/items/aad73fd6057484f20731
-
+* jsonのキーの意味とか
+** https://qiita.com/key/items/aad73fd6057484f20731
+* 公式なあれこれ
+** https://openweathermap.org/weather-conditions
 
 # コードを修正してherokuにpushする
 
