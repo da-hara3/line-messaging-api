@@ -1,5 +1,4 @@
-exports.dateFormat = {
-    _fmt : {
+let _fmt = {
       hh: function(date) { return ('0' + date.getHours()).slice(-2); },
       h: function(date) { return date.getHours(); },
       mm: function(date) { return ('0' + date.getMinutes()).slice(-2); },
@@ -17,7 +16,7 @@ exports.dateFormat = {
       MM: function(date) { return ('0' + (date.getMonth() + 1)).slice(-2); },
       M: function(date) { return date.getMonth() + 1; },
       $: function(date) {return 'M';}
-    },
-    _priority : ["hh", "h", "mm", "m", "ss", "dd", "d", "s", "yyyy", "yy", "t", "w", "MMMM", "MMM", "MM", "M", "$"],
-    format: function(date, format){return this._priority.reduce((res, fmt) => res.replace(fmt, this._fmt[fmt](date)), format)}
-   }
+    };
+let _priority = ["hh", "h", "mm", "m", "ss", "dd", "d", "s", "yyyy", "yy", "t", "w", "MMMM", "MMM", "MM", "M", "$"];
+
+exports.format = function(date, format){return this._priority.reduce((res, fmt) => res.replace(fmt, this._fmt[fmt](date)), format)}

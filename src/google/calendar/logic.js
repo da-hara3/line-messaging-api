@@ -8,7 +8,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = 'token.json';
 
 const BASE_DIR = '../../';
-const DATE_FORMAT = require(BASE_DIR + '/utils/dateFormat.js')
+const dateUtils = require(BASE_DIR + '/utils/dateUtils.js')
 // Load client secrets from a local file.
 // authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
 
@@ -166,14 +166,14 @@ function createEvent(params){
    if (start == ''){
     // からの場合は呼び出し元でエラーにする。
    } else  {
-    let startDate = DATE_FORMAT.format(new Date(start), 'yyyy-MM-ddThh:mm:ss'); 
+    let startDate = dateUtils.format(new Date(start), 'yyyy-MM-ddThh:mm:ss'); 
     start = startDate + JAPAN_TIME;
    }
 
   if (end == ''){
     end = start;
   } else{
-    let endDate = DATE_FORMAT.format(new Date(end), 'yyyy-MM-ddThh:mm:ss'); 
+    let endDate = dateUtils.format(new Date(end), 'yyyy-MM-ddThh:mm:ss'); 
     end = endDate + JAPAN_TIME;
   }
   
