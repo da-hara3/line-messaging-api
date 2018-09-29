@@ -202,26 +202,37 @@ async function operationForParam(paramText, callBackForLine){
       return calendar.registerEvent(callBackForLine, params);
     case '天気':
     case '天気教えて':
-      return weatherMap.get(callBackForLine);
+    case '今日の天気':
+    case '今日の天気教えて':
+      return weatherMap.get(callBackForLine);  
+    case '今週の天気':
+    case '今週の天気教えて':
+        return weatherMap.get(callBackForLine);
     case '仕様' :
     case '仕様教えて' :
-      return callBackForLine("呼びかけの基本: 先頭に「がーすー」"
-      + "\n---カレンダー確認---" 
-      + "\n・指定語「予定教えて」・例 「がーすー 予定教えて」"
-      + "\n---カレンダー登録---"
-      + "\n・指定語:「予定登録」,「予定登録して」"
-      + "\n・オプション:スペースでそれぞれの情報を区切る"
-      + "\n  * `t-`: タイトル * `s-`: 開始日時 * `e-`: 終了日時, `l-`: 場所, `指定なし`: 説明"
-      + "\n・例 「がーすー t-飲み会 s-2018-09-30T20:00」 *タイトルと開始日時が必須だよ " 
-      + "\n---カレンダー情報---"
-      + "\nharada.hiroto.bot@gmail.com に登録されてるよ"
-      + "\n中の人にgoogleアカウントを送ってくれたら権限を付与するよ"
-      );
+      return callBackForLine(getSpecific());
     default:
         return callBackForLine("ごめんよ。君の言っていることが分からないよ・・・");
     }
 
-    function get(){
-
+    function getSpecific(){
+      return `呼びかけの基本: 先頭に「がーすー」
+---カレンダー確認--- 
+ ・指定語「予定教えて」・例 「がーすー 予定教えて」
+---カレンダー登録---
+ ・指定語:「予定登録」,「予定登録して」
+ ・オプション:スペースでそれぞれの情報を区切る"
+  * 't-': タイトル * 's-': 開始日時 * 'e-': 終了日時, 'l-': 場所, '指定なし': 説明
+ ・例 「がーすー t-飲み会 s-2018-09-30T20:00」 *タイトルと開始日時が必須だよ 
+---カレンダー情報---
+ harada.hiroto.bot@gmail.com に登録されてるよ
+ 中の人にgoogleアカウントを送ってくれたら権限を付与するよ
+---簡易天気情報---
+・指定語: 
+  今日の天気:「天気」,「天気教えて」,「今日の天気」,「今日の天気教えて」
+  5日間の天気: 「今週の天気」,「今週の天気教えて」 
+・オプション: 1.空白を挟んで場所を指定できる
+・例 「がーすー 天気教えて 横浜」
+`;
     }
 }
