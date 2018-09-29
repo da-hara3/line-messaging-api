@@ -45,6 +45,7 @@ exports.getFiveDays = function (callback) {
 
 function resolveWeatherJson(parseJson){
   let message = "";
+  
   const HEAD_MESSAGE = ""
   for (weather of parseJson.weather){
     if (message !== ""){

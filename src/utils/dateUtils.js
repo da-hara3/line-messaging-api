@@ -19,4 +19,4 @@ let _fmt = {
     };
 let _priority = ["hh", "h", "mm", "m", "ss", "dd", "d", "s", "yyyy", "yy", "t", "w", "MMMM", "MMM", "MM", "M", "$"];
 
-exports.format = function(date, format){return this._priority.reduce((res, fmt) => res.replace(fmt, this._fmt[fmt](date)), format)}
+exports.format = function(date, format){return _priority.reduce((res, fmt) => res.replace(fmt, _fmt[fmt](date)), format)}
