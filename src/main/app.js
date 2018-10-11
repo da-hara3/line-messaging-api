@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let request = require('request');
 let crypto = require("crypto");
 let async = require('async');
+require("./schedule.js");
 
 const BASE_DIR = '../';
 let sendMessage = require(BASE_DIR + 'line/api/sendMessage.js');
