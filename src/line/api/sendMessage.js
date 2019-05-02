@@ -1,9 +1,9 @@
 var request = require('request');
 
-exports.send = function(req, messages) {
+exports.send = function(req, messages, accessToken) {
   var headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+    'Authorization': 'Bearer {' + accessToken + '}',
   };
 
   // 送信データ作成
