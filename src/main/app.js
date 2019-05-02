@@ -100,7 +100,7 @@ app.post('/callback', function (req, res) {
       if (message_text === 'テニスコート確認') {
         const to = req.body['events'][0]['source']['groupId'] ? req.body['events'][0]['source']['groupId'] : req.body['events'][0]['source']['userId'];
         checkTennisCort(to, getAccessToken(signatureType));
-        return sendMessage.send(req, [messageTemplate.textMessage(`${displayName}`)], getAccessToken(signatureType));
+        return sendMessage.send(req, [messageTemplate.textMessage(`今から確認してくるからちょっとお待ちを！`)], getAccessToken(signatureType));
       }
 
       return;
