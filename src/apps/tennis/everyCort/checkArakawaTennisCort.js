@@ -1,7 +1,7 @@
 const fs = require("fs");
 const puppeteer = require('puppeteer');
 const url = 'https://shisetsu.city.arakawa.tokyo.jp/stagia/reserve/gin_menu'; // 任意のURL;
-const waitTime = 5000;
+const waitTime = 8000;
 const waitTimeForSamePage = 2000;
 
 const userId = process.env.ARAKAWA_USER_ID;
@@ -20,10 +20,10 @@ const passWord = process.env.ARAKAWA_PASSWORD;
  * @returns
  * [{
  *  day: ""
- *  result: {
+ *  result: [{
  *    cortName: "",
  *    emptyTimes: []
- *   }
+ *   }]
  * }]
  */
 module.exports = async function () {
