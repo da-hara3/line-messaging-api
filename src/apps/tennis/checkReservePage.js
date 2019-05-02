@@ -1,6 +1,6 @@
-import checkArakawaTennisCort from "./everyCort/checkArakawaTennisCort"
+let checkArakawaTennisCort = require("./everyCort/checkArakawaTennisCort");
 
-export default async function () {
+module.exports = async function () {
   const arakawaResult = checkArakawaTennisCort();
   console.log(arakawaResult);
 }

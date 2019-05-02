@@ -6,7 +6,7 @@ const APIKEY = process.env.OPEN_WEATHER_MAP_API_KEY;
 const TODAY_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather?q='+ location +'&units='+ units +'&appid='+ APIKEY;
 const FIVW_DAYS_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/forecast?q='+ location +'&units='+ units +'&appid='+ APIKEY;
 
-const BASE_DIR = '../';
+const BASE_DIR = '../..';
 const dateUtils = require(BASE_DIR + '/utils/dateUtils.js')
 
 exports.get = function (callback) {
@@ -47,7 +47,7 @@ exports.getFiveDays = function (callback) {
 
 function resolveWeatherJson(parseJson){
   let message = "";
-  
+
   let measurementTime = new Date(parseJson.dt);
   const HEAD_MESSAGE = dateUtils.formst(measurementTime );
   for (weather of parseJson.weather){
@@ -65,29 +65,29 @@ function resolveWeatherJson(parseJson){
 
 function convertIcon(icon){
   switch(icon) {
-    case "01d" : 
-    case "01n" : 
+    case "01d" :
+    case "01n" :
       return "快晴";
-    case "02d" : 
-    case "02n" : 
+    case "02d" :
+    case "02n" :
       return "晴れ";
-    case "03d" : 
-    case "03n" : 
+    case "03d" :
+    case "03n" :
       return "くもり";
-    case "04d" : 
+    case "04d" :
     case "04n" :
      return "くもり";
-    case "09d" : 
-    case "09n" : 
+    case "09d" :
+    case "09n" :
       return "小雨";
-    case "10d" : 
-    case "10n" : 
+    case "10d" :
+    case "10n" :
       return "雨";
     case "11d" :
     case "11n" :
      return "雷雨";
-    case "13d" : 
-    case "13n" : 
+    case "13d" :
+    case "13n" :
       return "雪";
     case "50d" :
     case "50n" :

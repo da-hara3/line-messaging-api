@@ -7,7 +7,7 @@ const {google} = require('googleapis');
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = 'token.json';
 
-const BASE_DIR = '../../';
+const BASE_DIR = '../../..';
 const dateUtils = require(BASE_DIR + '/utils/dateUtils.js')
 // Load client secrets from a local file.
 // authorize(JSON.parse(process.env.GOOGLE_CREDENTIALS), listEvents, function(){});
@@ -31,7 +31,7 @@ function authorize(credentials, callback, callBackAfterApi, params) {
   // Check if we have previously stored a token.
   // getAccessToken(oAuth2Client, callback); //TODO //reflesh enviroment var
   oAuth2Client.setCredentials(JSON.parse(process.env.GOOGLE_TOKEN));
-  return callback(oAuth2Client, callBackAfterApi, params); 
+  return callback(oAuth2Client, callBackAfterApi, params);
 }
 
 /**
@@ -101,20 +101,20 @@ function registerEventLocal(auth, callBackAfterApi, params) {
   let event = createEvent(params);
   if (event.summary === ''){
     callBackAfterApi('タイトルが入ってないよ！');
-    return 
+    return
   }
   if (event.start === '' ){
    callBackAfterApi('開始日が入っていないよ！');
-   return 
+   return
   }
 
   if (event.start.dateTime.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
     callBackAfterApi('開始日がおかしいよ！');
-    return 
+    return
   }
   if (event.end.dateTime.indexOf('NaN-aN-aNTaN:aN:aN') !== -1){
     callBackAfterApi('開始日がおかしいよ！');
-    return 
+    return
   }
 
   const calendar = google.calendar({version: 'v3', auth});
@@ -166,17 +166,17 @@ function createEvent(params){
    if (start == ''){
     // からの場合は呼び出し元でエラーにする。
    } else  {
-    let startDate = dateUtils.format(new Date(start), 'yyyy-MM-ddThh:mm:ss'); 
+    let startDate = dateUtils.format(new Date(start), 'yyyy-MM-ddThh:mm:ss');
     start = startDate + JAPAN_TIME;
    }
 
   if (end == ''){
     end = start;
   } else{
-    let endDate = dateUtils.format(new Date(end), 'yyyy-MM-ddThh:mm:ss'); 
+    let endDate = dateUtils.format(new Date(end), 'yyyy-MM-ddThh:mm:ss');
     end = endDate + JAPAN_TIME;
   }
-  
+
 
   return {
     'summary': title,

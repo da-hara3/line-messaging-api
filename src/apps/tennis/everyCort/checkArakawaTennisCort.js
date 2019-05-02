@@ -26,7 +26,7 @@ const passWord = process.env.ARAKAWA_PASSWORD;
  *   }
  * }]
  */
-export default async function () {
+module.exports = async function () {
   const browser = await puppeteer.launch();
   try {
     const page = await browser.newPage();
