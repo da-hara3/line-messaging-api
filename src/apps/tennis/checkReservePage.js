@@ -9,8 +9,12 @@ module.exports = async function (to, accessToken) {
   const arakawaResult = await checkArakawaTennisCort();
 
   if (!arakawaResult) {
-    pushMessage.send(to, [messageTemplate.textMessage(`エラーが起きたっぽい`)], accessToken);
-  } else if (arakawaResult.length === 0) {
+    return pushMessage.send(to, [messageTemplate.textMessage(`エラーが起きたっぽい`)], accessToken);
+
+  }
+
+  const isEmpty = arakawaResult.filter(el => el.result.length > 0).length === 0;
+  if (isEmpty) {
     pushMessage.send(to, [messageTemplate.textMessage(`空いているコートはなかったよ・・・`)], accessToken);
   } else {
     pushMessage.send(to, [messageTemplate.textMessage(`${generateMessage(arakawaResult)}`)], accessToken);
@@ -19,7 +23,8 @@ module.exports = async function (to, accessToken) {
 
 const generateMessage = (array) => {
   let result = "";
-  array.forEach(el => {
+  array.filter(el => el.result.length > 0)
+    .forEach(el => {
     result += el.day + "\n";
     el.result.forEach(cort => {
       result += `  ${cort.cortName} \n`;
