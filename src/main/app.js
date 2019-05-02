@@ -71,7 +71,7 @@ app.post('/callback', function (req, res) {
       // 'text', 'image' ...
       let message_type = req.body['events'][0]['message']['type'];
       let message_text = req.body['events'][0]['message']['text'];
-      request.get(getProfileOption(user_id, si), function (error, response, body) {
+      request.get(getProfileOption(user_id, signatureType), function (error, response, body) {
         if (!error && response.statusCode == 200) {
           callback(req, body['displayName'], message_id, message_type, message_text, signatureType);
         }
