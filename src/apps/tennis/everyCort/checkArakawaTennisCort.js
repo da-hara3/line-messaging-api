@@ -27,7 +27,9 @@ const passWord = process.env.ARAKAWA_PASSWORD;
  * }]
  */
 module.exports = async function () {
-  const browser = await puppeteer.launch();
+  const LAUNCH_OPTION = process.env.DYNO ? { args: ['--no-sandbox', '--disable-setuid-sandbox'] } : { headless: false };
+
+  const browser = await puppeteer.launch(LAUNCH_OPTION);
   try {
     const page = await browser.newPage();
     const response = await page.goto(url);
