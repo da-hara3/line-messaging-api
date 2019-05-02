@@ -179,9 +179,9 @@ function getProfileOption(user_id, signatureType) {
 function getSignatureType(signature, body) {
   const getSignature = (channelSecret, body) => crypto.createHmac('sha256', channelSecret).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64')
   switch (signature) {
-    case getSignature(process.env.LINE_CHANNEL_SECRET):
+    case getSignature(process.env.LINE_CHANNEL_SECRET, body):
       return SIGNATURE.sugawaraBot;
-    case getSignature(process.env.LINE_CHANNEL_SECRET2):
+    case getSignature(process.env.LINE_CHANNEL_SECRET2, body):
       return SIGNATURE.tenissCort;
     default:
       return null;
