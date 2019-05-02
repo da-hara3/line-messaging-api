@@ -183,7 +183,7 @@ const notExistsNextPage = async (page) => {
 
 const moveNextPage = async (page) => {
   await Promise.all([
-    page.waitForNavigation({timeout: 20000, waitUntil: "domcontentloaded"}),
+    page.waitForNavigation({waitUntil: "domcontentloaded"}),
     page.evaluate(() => {
       const nextATag = Array.from(document.querySelector(".double.time-navigation").querySelectorAll("a")).filter(a => a.textContent === "次へ")[0];
       nextATag.click();
