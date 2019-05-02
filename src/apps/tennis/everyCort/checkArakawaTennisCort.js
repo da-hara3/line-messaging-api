@@ -186,7 +186,7 @@ const moveNextPage = async (page) => {
     const nextATag = Array.from(document.querySelector(".double.time-navigation").querySelectorAll("a")).filter(a => a.textContent === "次へ")[0];
     nextATag.click();
   });
-  await page.waitFor(5000)
+  await page.waitFor(3000)
 
 
   // await Promise.all([

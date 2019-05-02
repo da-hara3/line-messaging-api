@@ -20,11 +20,11 @@ module.exports = async function (to, accessToken) {
 const generateMessage = (array) => {
   let result = "";
   array.forEach(el => {
-    result = el.day + "\n";
+    result += el.day + "\n";
     el.result.forEach(cort => {
-      result = `  ${cort.cortName} \n`;
+      result += `  ${cort.cortName} \n`;
       cort.emptyTimes.forEach(time => {
-        result = `    ${time} \n`;
+        result += `    ${time} \n`;
       })
     })
   });
