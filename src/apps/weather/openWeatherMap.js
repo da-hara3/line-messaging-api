@@ -6,6 +6,8 @@ const APIKEY = process.env.OPEN_WEATHER_MAP_API_KEY;
 const TODAY_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather?q='+ location +'&units='+ units +'&appid='+ APIKEY;
 const FIVW_DAYS_WEATHER_URL = 'http://api.openweathermap.org/data/2.5/forecast?q='+ location +'&units='+ units +'&appid='+ APIKEY;
 
+const BASE_DIR = '../';
+const dateUtils = require(BASE_DIR + '/utils/dateUtils.js')
 
 exports.get = function (callback) {
 // function weather(callback) {
@@ -46,7 +48,8 @@ exports.getFiveDays = function (callback) {
 function resolveWeatherJson(parseJson){
   let message = "";
   
-  const HEAD_MESSAGE = ""
+  let measurementTime = new Date(parseJson.dt);
+  const HEAD_MESSAGE = dateUtils.formst(measurementTime );
   for (weather of parseJson.weather){
     if (message !== ""){
       message += ", ところにより";

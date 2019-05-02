@@ -7,10 +7,12 @@ let async = require('async');
 require("./schedule.js");
 
 const BASE_DIR = '../';
+const APPS_DIR = BASE_DIR + "apps/"
 let sendMessage = require(BASE_DIR + 'line/api/sendMessage.js');
 let messageTemplate = require(BASE_DIR + 'line/api/messageTemplate.js');
-let calendar = require(BASE_DIR + 'google/calendar/logic.js');
-let weatherMap = require(BASE_DIR + 'weather/openWeatherMap.js');
+let calendar = require(APPS_DIR + 'google/calendar/logic.js');
+let weatherMap = require(APPS_DIR + 'weather/openWeatherMap.js');
+let checkTennisCort = require(APPS_DIR + 'tennis/checkReservePage.js');
 
 const SIGNATURE =
 {
@@ -88,16 +90,16 @@ app.post('/callback', function (req, res) {
       // 半角も全角も判定できるようにしておく。
       if (isReturnMessage(message_type, message_text, CORRECT_SPACE_INDEX)) {
         let param_text = message_text.substr(CORRECT_SPACE_INDEX).trim();
-        return operationForParam(param_text, function (value) { sendMessage.send(req, [messageTemplate.textMessage(value)], getAccessToken(signatureType));});
+        return operationForParam(param_text, function (value) { sendMessage.send(req, [messageTemplate.textMessage(value)], getAccessToken(signatureType))});
       }
 
       if (message_text === 'がーすー') {
-        return callBackForLine("やあ, " + displayName + "。ぼくはがーすー。\n「こんなことしてほしい！」があったら言ってね！");
+        return sendMessage.send(req, [messageTemplate.textMessage(`やあ,  ${displayName}。ぼくはがーすー。\n「こんなことしてほしい！」があったら言ってね！`)], getAccessToken(signatureType));
       }
 
-
       if (message_text === 'テニスコート確認') {
-        callBackForLine("今から処理を始めるよ");
+        checkTennisCort();
+        return sendMessage.send(req, [messageTemplate.textMessage(`${displayName}`)], getAccessToken(signatureType));
       }
 
       return;
