@@ -4,6 +4,7 @@ let bodyParser = require('body-parser');
 let request = require('request');
 let crypto = require("crypto");
 let async = require('async');
+let moment = require('moment')
 require("./schedule.js");
 
 const BASE_DIR = '../';
@@ -234,9 +235,12 @@ async function operationForParam(paramText, callBackForLine) {
     case '今週の天気':
     case '今週の天気教えて':
       return weatherMap.get(callBackForLine);
+    case 'たなべカウントダウン':
+      return callBackForLine(`後${moment("2020-01-26").diff(moment(), "DAYS")}日`);
     case '仕様':
     case '仕様教えて':
       return callBackForLine(getSpecific());
+
     default:
       return callBackForLine("ごめんよ。君の言っていることが分からないよ・・・");
   }
