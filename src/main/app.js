@@ -49,6 +49,8 @@ app.get('/test', (req, res) => {
 // ここは最終的に別クラスに移譲する作りにするべき
 app.post('/callback', function (req, res) {
   console.log("リクエストログ開始");
+  console.log(req);
+
   console.log(req.body['events'][0]);
   console.log("リクエストログ終了");
   async.waterfall([
